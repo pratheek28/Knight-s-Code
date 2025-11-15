@@ -1,6 +1,10 @@
 import os
+import pdf
 from astrapy import DataAPIClient, Database
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import File, UploadFile
 
 endpoint = os.environ.get("API_ENDPOINT")
 token = os.environ.get("APPLICATION_TOKEN")
@@ -16,26 +20,30 @@ client = DataAPIClient()
 # Get the database specified by your endpoint and provide the token
 db = client.get_database(endpoint, token=token)
 
-print(f"Connected to database {database.info().name}")
-
-#1 email
-
-
-#2 chapter
-
+# print(f"Connected to database {database.info().name}")
 
 # users = db.get_table("users")
 # chapters = db.get_table("chapters")
 
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.post("/pdf")
-async def pdf(request: Request):
-    data = await request.json()
+async def upload_pdf(file: UploadFile = File(...)):
+    data = await file.read()
     
-    chapter = data.get("chapter")
-    t1 = data.get("t1")
-    t2 = data.get("t2")
+    print(data)
     
-    if (not chapter) or (not t1) or (not t2):
+    parsed = pdf.parse(data)
+    
+    if (not parsed):
         message = {
             "message": "Error: Missing fields"
         }
@@ -43,13 +51,18 @@ async def pdf(request: Request):
     
     chapters = db.get_table("chapters")
     
-    chapterData = {
-        "chapter": chapter,
-        "t1": t1,
-        "t2": t2
-    }
+    for chapter, topic in parsed.items():
+        number = chapter[2:3]
+        
+        chapterData = {
+            "chapternumber": int(number),
+            "chapter": str(chapter[5:]),
+            "t1": str(topic[0]),
+            "t2": str(topic[1])
+        }
+        
+        chapters.insert(chapterData)
     
-    chapters.insert(chapterData)
     
     message = {
         "message": "Success"
@@ -92,3 +105,31 @@ async def users(request: Request):
 # users.insert({"id": 1, "name": "John Doe"})
 # chapters.insert({"id": 1, "name": "Chapter 1"})
 
+# def pdfTest(file):
+#     # data = await file.read()
+    
+#     print(file)
+    
+#     parsed = pdf.parse(file)
+    
+#     # if (not parsed):
+#     #     message = {
+#     #         "message": "Error: Missing fields"
+#     #     }
+#     #     return JSONResponse(content=message, status_code=422)
+    
+#     chapters = db.get_table("chapters")
+    
+#     for chapter, topic in parsed.items():
+#         number = chapter[2:3]
+        
+#         chapterData = {
+#             "chapternumber": int(number),
+#             "chapter": str(chapter[5:]),
+#             "t1": str(topic[0]),
+#             "t2": str(topic[1])
+#         }
+        
+#         chapters.insert_one(chapterData)
+
+# pdfTest("CS10A_Topics.pdf")
