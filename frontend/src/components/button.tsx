@@ -2,8 +2,7 @@ type ButtonProps = {
   text: string;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
-
-}
+};
 
 const Button = (props: ButtonProps) => {
   return (

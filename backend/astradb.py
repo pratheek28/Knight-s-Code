@@ -105,6 +105,23 @@ async def users(request: Request):
     
     return JSONResponse(content=message)
 
+@app.get("/getStudentInfo")
+async def getStudentInfo():
+    email = "pratheek@gmail.com"
+    
+    users = db.get_table("users")
+
+    userData = users.find_one({"email": email})
+
+    if not userData:
+        message = {
+            "message": "Error: User not found"
+        }
+        return JSONResponse(content=message, status_code=404)
+    
+    print(userData)
+    return JSONResponse(content=userData)
+    
 @app.post("/question")
 async def question(request: Request):
     data = request.json()

@@ -6,7 +6,11 @@ type BackgroundBoxProps = {
   children?: ReactNode;
 };
 
-export default function BackgroundBox({ image, className, children }: BackgroundBoxProps) {
+export default function BackgroundBox({
+  image,
+  className,
+  children,
+}: BackgroundBoxProps) {
   return (
     <div
       className={className}
