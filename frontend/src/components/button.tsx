@@ -1,17 +1,44 @@
-type ButtonProps = {
-  text: string;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-  className?: string;
+import React from 'react';
 
+// Define the component's props interface
+interface ButtonProps {
+  text: string;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string; // This is where the theme styles are passed
 }
 
-const Button = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
+  
+  // Base button styles derived from your Dark Fantasy design requirements:
+  const baseClasses = `
+    /* Base Size & Text */
+    py-3.5 px-8 
+    text-lg font-bold uppercase 
+    cursor-pointer 
+    font-unifraktur /* *** FIXED: Using the correctly defined Google Font utility *** */
+    
+    /* Shape & Effects */
+    transition-all duration-300 ease-in-out 
+    border-2 
+    transform 
+    
+    /* Custom oval/scroll shape (approximate with Tailwind's arbitrary value) */
+    rounded-[12px] 
+    
+    /* Global Hover Effects (Lift and general shadow) */
+    hover:translate-y-[-2px] 
+    hover:shadow-2xl hover:shadow-black/50
+  `;
+
   return (
-    <div>
-      <button className="cursor-pointer border-2 p-8" onClick={props.onClick}>
-        {props.text}
-      </button>
-    </div>
+    <button 
+      // Merging base classes with the theme classes
+      className={`${baseClasses} ${className || ''}`}
+      onClick={onClick}
+    >
+      {text}
+    </button>
   );
 };
+
 export default Button;
