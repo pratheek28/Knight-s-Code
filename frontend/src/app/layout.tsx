@@ -1,6 +1,8 @@
 import "./globals.css";
 import { UnifrakturMaguntia } from "next/font/google";
 import { ReactQueryClientProvider } from "@/utils/react-query";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 
 // Merged metadata, prioritizing the mystical theme
 export const metadata = {
@@ -21,10 +23,12 @@ const unifraktur = UnifrakturMaguntia({
 
 export default function RootLayout({ children }: LayoutProps) {
   return (
-    // Apply the font class globally via the CSS variable
     <html lang="en" className={unifraktur.variable}> 
-      <body className="font-unifraktur">
+      <body className={inter.className}>
+                <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+
         <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

@@ -1,11 +1,9 @@
 import React from 'react';
-
-// Define the component's props interface
-interface ButtonProps {
+type ButtonProps = {
   text: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string; // This is where the theme styles are passed
-}
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  className?: string;
+};
 
 const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
   
@@ -40,5 +38,4 @@ const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
     </button>
   );
 };
-
 export default Button;

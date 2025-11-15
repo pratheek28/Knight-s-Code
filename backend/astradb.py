@@ -1,6 +1,7 @@
 import os
 import pdf
 import io
+import gemini
 from astrapy import DataAPIClient, Database
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -104,6 +105,55 @@ async def users(request: Request):
     
     return JSONResponse(content=message)
 
+@app.get("/getStudentInfo")
+async def getStudentInfo():
+    email = "pratheek@gmail.com"
+    
+    users = db.get_table("users")
+
+    userData = users.find_one({"email": email})
+
+    if not userData:
+        message = {
+            "message": "Error: User not found"
+        }
+        return JSONResponse(content=message, status_code=404)
+    
+    print(userData)
+    return JSONResponse(content=userData)
+    
+@app.post("/question")
+async def question(request: Request):
+    data = request.json()
+    
+    chapter = data.get("chapter")
+    question = data.get("question")
+    
+    if (not question) or (not chapter):
+        message = {
+            "message": "Error: Missing Fields"
+        }
+        return JSONResponse(content=message, status_code=422)
+    
+    chapters = db.get_table("chapters")
+    
+    chapterData = chapters.find_one({"chapternumber": int(chapter)})
+    
+    intquestion = int(question)
+    
+    if intquestion == 1:
+        return JSONResponse(content=chapterData["t1", "t2"])
+    elif intquestion == 2:
+        return JSONResponse(content=chapterData["t1"])
+    elif intquestion == 3:
+        return JSONResponse(content=chapterData["t2"])
+    
+    message = {
+        "message": "Success"
+    }
+    
+    return JSONResponse(content=message)
+
 
 # users.insert({"id": 1, "name": "John Doe"})
 # chapters.insert({"id": 1, "name": "Chapter 1"})
@@ -136,3 +186,39 @@ async def users(request: Request):
 #         chapters.insert_one(chapterData)
 
 # pdfTest("CS10A_Topics.pdf")
+
+
+def getQuestion(chapter, question):
+    # data = request.json()
+    
+    # chapter = data.get("chapter")
+    # question = data.get("question")
+    
+    # if (not question) or (not chapter):
+    #     message = {
+    #         "message": "Error: Missing Fields"
+    #     }
+    #     return JSONResponse(content=message, status_code=422)
+    
+    chapters = db.get_table("chapters")
+    
+    chapterData = chapters.find_one({"chapternumber": int(chapter)})
+    
+    intquestion = int(question)
+    
+    if intquestion == 1:
+        print(chapterData["chapter"], chapterData["t1"], chapterData["t2"], "\n")
+        gemini.generate_mcq(chapterData["t1"], chapterData["t2"])
+    elif intquestion == 2:
+        print(chapterData["chapter"], chapterData["t1"], "\n")
+        gemini.generate_coding(chapterData["t1"])
+    elif intquestion == 3:
+        print(chapterData["chapter"], chapterData["t2"], "\n")
+        gemini.generate_coding(chapterData["t2"])
+    # message = {
+    #     "message": "Success"
+    # }
+    
+    # return JSONResponse(content=message)
+    
+getQuestion(2, 1)

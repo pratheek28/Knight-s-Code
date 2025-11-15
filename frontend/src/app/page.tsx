@@ -1,7 +1,8 @@
 "use client";
-
 import Image from "next/image";
 import Button from "@/components/button";
+import StudyZone from "./studyzone";
+
 import { useRouter } from "next/navigation";
 import React from 'react';
 
@@ -10,6 +11,10 @@ const Page: React.FC = () => {
 
     const handleTeacher = (): void => {
         router.push("/teacher");
+    };
+
+    const handleStudent = () => {
+      router.push("/student");
     };
     
     // --- Tailwind Theme Definitions (Mystical Cosmic) ---
@@ -54,7 +59,9 @@ const Page: React.FC = () => {
 
     return (
         <div className="relative h-screen w-screen flex flex-col items-center justify-center gap-6">
-            
+            <div>
+              <StudyZone chapno={1} qno={1} background={"icons/testbg1.png"} />
+            </div>
             {/* Background */}
             <Image
                 src="/background/splash_screen_BG.png"
