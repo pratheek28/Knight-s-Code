@@ -23,7 +23,7 @@ export default function RootLayout({ children }: LayoutProps) {
   return (
     // Apply the font class globally via the CSS variable
     <html lang="en" className={unifraktur.variable}> 
-      <body className="font-sans">
+      <body className="font-unifraktur">
         <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
       </body>
     </html>

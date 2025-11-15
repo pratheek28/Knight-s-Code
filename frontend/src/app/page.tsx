@@ -47,9 +47,7 @@ const Page: React.FC = () => {
     const titleClasses: string = `
         text-7xl md:text-[64px] font-bold 
         text-white uppercase text-center 
-        tracking-wider 
-        font-unifraktur  
-        
+        tracking-wider font-unifraktur  
         /* Custom Glowing Text Shadow */
         [text-shadow:0_0_10px_rgba(255,255,255,0.8),0_0_20px_rgba(255,255,255,0.3)]
     `;
