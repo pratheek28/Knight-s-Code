@@ -2,6 +2,7 @@
 import React from "react";
 import LiveCodes, { Playground } from "livecodes/react";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 interface IDEProps {
   script: {
@@ -39,7 +40,10 @@ const IDE = (props: IDEProps) => {
   const [playground, setPlayground] = useState<Playground>();
   const [errors, setErrors] = useState("");
 
-  const [showgenie, setgenie] = useState(true);
+  const [showgenie, setgenie] = useState(false);
+  const [hint, sethint] = useState("Consulting the Oracle...");
+
+  const [correct, setcorrect] = useState("");
 
   const onReady = (sdk: Playground) => {
     setPlayground(sdk);
@@ -48,10 +52,14 @@ const IDE = (props: IDEProps) => {
       console.log(`Console ${method}:`, ...args);
       if (args[0] == props.correctOutput) {
         console.log("✅ Correct!");
+        setcorrect("true");
       } else {
         console.log("❌ Try again!: ", args[0]);
         setErrors(args[0]);
+        setcorrect("false");
       }
+      // Clear the correct indicator after 1.5 seconds`
+      setTimeout(() => setcorrect(""), 1500);
     });
 
     // Optional cleanup when unmounted
@@ -67,17 +75,26 @@ const IDE = (props: IDEProps) => {
   };
 
   const ask = async () => {
-    let code = "";
-    let error = "";
-    playground.getCode().then((code) => {
-      const { content, language, compiled } = code.script;
-      console.log("Current code content:", content);
-      code = content;
+    setgenie(true);
+    sethint("Consulting the Oracle...");
+    const codeData = await playground.getCode();
+    const code = codeData.script.content;
+    await playground.run();
+
+    // Use errors from state or directly from the console watcher if needed
+    const error = errors; // Make sure errors are updated before calling ask
+    console.log("Asking Merlin with code:", code, "and error:", error);
+    const response = await fetch("http://127.0.0.1:8000/merlin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code: code, error: error }),
     });
-    playground.run().then((result) => {
-      console.log("Errors found: ", errors);
-      error = errors;
-    });
+
+    const data = await response.json();
+    console.log("Hint:", data.hint);
+    sethint(data.hint);
   };
 
   return (
@@ -113,28 +130,42 @@ const IDE = (props: IDEProps) => {
 
       {showgenie && (
         <div className="absolute top-1/2 right-30 z-50 w-80 -translate-y-1/2 transform">
-          <div className="relative animate-pulse overflow-hidden rounded-xl border-2 border-yellow-400 bg-yellow-100/90 p-4 shadow-xl backdrop-blur-sm">
+          <div
+            className={`relative overflow-hidden rounded-xl border-2 border-yellow-400 bg-yellow-100/90 p-4 shadow-xl backdrop-blur-sm ${
+              hint === "Consulting the Oracle..." ? "animate-pulse" : ""
+            }`}
+          >
             <div className="absolute -top-2 -left-2 h-6 w-6 rounded-full bg-yellow-200 shadow-inner"></div>
             <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-yellow-200 shadow-inner"></div>
             <div className="absolute -bottom-2 -left-2 h-6 w-6 rounded-full bg-yellow-200 shadow-inner"></div>
             <div className="absolute -right-2 -bottom-2 h-6 w-6 rounded-full bg-yellow-200 shadow-inner"></div>
 
             {/* Title */}
-            <h2 className="mb-2 animate-pulse text-lg font-extrabold tracking-wider text-yellow-800">
+            <h2
+              className={`mb-2 text-lg font-extrabold tracking-wider text-yellow-800 ${
+                hint === "Consulting the Oracle..." ? "animate-pulse" : ""
+              }`}
+            >
               📜 Merlin AI
             </h2>
 
-            {/* Content with shimmer */}
+            {/* Content with shimmer if hint matches */}
             <p className="relative mb-4 overflow-hidden text-sm text-yellow-900">
-              <span className="loading-text">Consulting the Oracle…</span>
+              {hint === "Consulting the Oracle..." ? (
+                <span className="loading-text">{hint}</span>
+              ) : (
+                <span>
+                  <ReactMarkdown>{hint}</ReactMarkdown>
+                </span>
+              )}
             </p>
 
-            {/* Sparkles */}
-            <div className="animate-bounce-slow absolute top-2 left-1/2 h-2 w-2 -translate-x-1/2 transform rounded-full bg-white opacity-50"></div>
-            <div className="animate-bounce-slower absolute top-6 right-6 h-1 w-1 rounded-full bg-white opacity-50"></div>
-            <div className="animate-bounce-slowest absolute bottom-4 left-10 h-1 w-1 rounded-full bg-white opacity-50"></div>
+            {/* Sparkles only if hint matches */}
+            {hint === "Consulting the Oracle..." && (
+              <div className="animate-bounce-slowest absolute bottom-4 left-10 h-1 w-1 rounded-full bg-white opacity-50"></div>
+            )}
 
-            {/* Close button as a small ribbon/tab */}
+            {/* Close button */}
             <button
               onClick={() => setgenie(false)}
               className="rounded bg-yellow-800 px-3 py-1 text-xs font-semibold text-yellow-100 shadow-md transition-colors hover:bg-yellow-700"
@@ -187,6 +218,39 @@ const IDE = (props: IDEProps) => {
 
             .animate-bounce-slowest {
               animation: bounce-slowest 2.5s infinite ease-in-out;
+            }
+          `}</style>
+        </div>
+      )}
+      {correct && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span
+            className={`text-[6rem] font-extrabold ${
+              correct === "true"
+                ? "animate-checkmark text-green-500"
+                : "animate-checkmark text-red-500"
+            }`}
+          >
+            {correct === "true" ? "✔" : "✖"}
+          </span>
+
+          <style jsx>{`
+            @keyframes checkmark {
+              0% {
+                transform: scale(0.3);
+                opacity: 0;
+              }
+              50% {
+                transform: scale(1.2);
+                opacity: 1;
+              }
+              100% {
+                transform: scale(1);
+                opacity: 0;
+              }
+            }
+            .animate-checkmark {
+              animation: checkmark 1.2s ease forwards;
             }
           `}</style>
         </div>
