@@ -1,5 +1,6 @@
 import "./globals.css";
-import { UnifrakturMaguntia } from "next/font/google";
+// import { UnifrakturMaguntia } from "next/font/google";
+import { Pirata_One } from 'next/font/google'; // 1. Import Pirata One
 import { ReactQueryClientProvider } from "@/utils/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -14,16 +15,22 @@ type LayoutProps = {
 };
 
 // Configure the UnifrakturMaguntia font loader
-const unifraktur = UnifrakturMaguntia({
-  weight: "400",
+// const unifraktur = UnifrakturMaguntia({
+//   weight: "400",
+//   subsets: ["latin"],
+//   variable: "--font-unifraktur",
+// });
+const pirataOne = Pirata_One({
+  weight: "400", // Pirata One only offers 400 weight
   subsets: ["latin"],
-  variable: "--font-unifraktur",
+  variable: "--font-pirata-one", // Define the CSS variable
 });
+
 
 export default function RootLayout({ children }: LayoutProps) {
   return (
-    <html lang="en" className={unifraktur.variable}>
-      <body className={unifraktur.className}>
+    <html lang="en" className={pirataOne.variable}>
+      <body className={pirataOne.className}>
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >

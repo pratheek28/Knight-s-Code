@@ -77,13 +77,13 @@ async def upload_pdf(file: UploadFile = File(...)):
 
 @app.post("/users")
 async def users(request: Request):
-    data = request.json()
+    data = await request.json()
     
     email = data.get("email")
-    chapter = data.get("chapter")
-    question = data.get("question")
+    chapter = 1
+    question = 1
     
-    if (not email) or (not chapter) or (not question):
+    if (not email):
         message = {
             "message": "Error: Missing Fields"
         }
@@ -97,7 +97,7 @@ async def users(request: Request):
         "question": question
     }
     
-    users.insert(userData)
+    users.insert_one(userData)
     
     message = {
         "message": "Success"
@@ -105,13 +105,18 @@ async def users(request: Request):
     
     return JSONResponse(content=message)
 
-@app.get("/getStudentInfo")
-async def getStudentInfo():
-    email = "pratheek@gmail.com"
+@app.post("/getStudentInfo")
+async def getStudentInfo(request: Request):
+    data = await request.json()
+    email = data.get("email")
     
+    print("Email received:", email)
+
     users = db.get_table("users")
 
     userData = users.find_one({"email": email})
+
+    print("User data retrieved:", userData)
 
     if not userData:
         message = {
@@ -120,14 +125,15 @@ async def getStudentInfo():
         return JSONResponse(content=message, status_code=404)
     
     print(userData)
-    return JSONResponse(content=userData)
+    return JSONResponse(content=dict(userData))
     
 @app.post("/question")
 async def question(request: Request):
     body = await request.json()  # <-- parse JSON body
 
     chapter = body.get("chapter")
-    question = body.get("question")
+    question = body.get("question") 
+
     
     if (not question) or (not chapter):
         message = {
@@ -226,3 +232,5 @@ def getQuestion(chapter, question):
     return JSONResponse(content=response)
     
 #getQuestion(2, 1)
+# getQuestion(2, 1)
+ 
