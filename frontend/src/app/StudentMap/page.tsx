@@ -124,7 +124,7 @@ const StudentMap = () => {
 
             </h1>
             {/* Added current chapter progress info back as well */}
-            <h2 className="mt-0 text-base text-white/160 font-large">
+            <h2 className="mt-0 text-base text-white font-large">
                 Who hath slain the king?
             </h2>
         </header>
