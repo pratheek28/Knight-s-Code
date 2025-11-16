@@ -1,6 +1,8 @@
 "use client";
 import { constants } from "node:fs/promises";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 interface MCQProps {
   passage: string;
@@ -15,6 +17,8 @@ interface MCQProps {
 }
 
 const MCQ = (props: MCQProps) => {
+    const router = useRouter();
+  
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3: "" });
   const [result, setResult] = useState<null | string>(null);
 
@@ -52,6 +56,9 @@ const handleSubmit = async () => {
 
       if (response.ok) {
         console.log(`Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`);
+        setTimeout(() => {
+      router.push("/StudentMap");
+    }, 3000); // wait 1 second
       } else {
        console.log(`Error: ${data.message}`);
       }

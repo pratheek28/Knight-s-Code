@@ -3,6 +3,8 @@ import React from "react";
 import LiveCodes, { Playground } from "livecodes/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useRouter } from "next/navigation";
+
 
 interface IDEProps {
   script: {
@@ -18,6 +20,8 @@ interface IDEProps {
 }
 
 const IDE = (props: IDEProps) => {
+    const router = useRouter();
+
   const options = {
     params: {
       languages: "cpp-wasm",
@@ -104,6 +108,9 @@ if (args[0].trim() === props.correctOutput.trim()) {
 
       if (response.ok) {
         console.log(`Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`);
+setTimeout(() => {
+      router.push("/StudentMap");
+    }, 3000); // wait 1 second
       } else {
        console.log(`Error: ${data.message}`);
       }
@@ -151,7 +158,7 @@ if (diffs.length > 0) {
     // Use errors from state or directly from the console watcher if needed
     const error = errors; // Make sure errors are updated before calling ask
     console.log("Asking Merlin with code:", code, "and error:", error);
-    const response = await fetch("http://127.0.0.1:8000/merlin", {
+    const response = await fetch("http://127.0.0.1:8001/merlin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
