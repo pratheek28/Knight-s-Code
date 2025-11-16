@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ text, onClick, className }) => {
     py-3.5 px-8 
     text-lg font-bold uppercase 
     cursor-pointer 
-    font-unifraktur /* *** FIXED: Using the correctly defined Google Font utility *** */
+    font-pirataOne /* *** FIXED: Using the correctly defined Google Font utility *** */
     
     /* Shape & Effects */
     transition-all duration-300 ease-in-out 
