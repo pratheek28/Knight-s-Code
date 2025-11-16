@@ -158,7 +158,7 @@ if (diffs.length > 0) {
     // Use errors from state or directly from the console watcher if needed
     const error = errors; // Make sure errors are updated before calling ask
     console.log("Asking Merlin with code:", code, "and error:", error);
-    const response = await fetch("http://127.0.0.1:8001/merlin", {
+    const response = await fetch("http://127.0.0.1:8000/merlin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
