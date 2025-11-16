@@ -10,6 +10,8 @@ import Chapter7 from "@/public/icons/Chapter_7.png";
 import Chapter8 from "@/public/icons/Chapter_8.png";
 import Chapter9 from "@/public/icons/Chapter_9.png";
 import Chapter10 from "@/public/icons/Chapter_10.png";
+import Inventory from "@/components/inventory";
+import InventoryPopup from "@/components/InventoryPopup";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,13 +19,19 @@ const StudentMap = () => {
   const [email, setEmail] = useState("");
   const [chapter, setChapter] = useState(-1);
   const [questionNum, setQuestion] = useState(-1);
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const studentEmail = sessionStorage.getItem("studentEmail");
-      setEmail(studentEmail ?? "");
-      if (!studentEmail) return;
+  // Sample inventory items - replace with your actual inventory data
+  const inventoryItems = [
+    { id: 1, name: "Scroll of Knowledge", description: "Reveals hidden clues" },
+    { id: 2, name: "Healing Potion", description: "Restores health" },
+  ];
+
+  const fetchData = async () => {
+    const studentEmail = sessionStorage.getItem("studentEmail");
+    setEmail(studentEmail ?? "");
+    if (!studentEmail) return;
 
       try {
         console.log("Fetching student info for email:", studentEmail);
@@ -49,6 +57,7 @@ const StudentMap = () => {
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -64,9 +73,7 @@ const StudentMap = () => {
     };
 
     console.log("The Data that will be sent: " + JSON.stringify(data));
-
     sessionStorage.setItem("studentData", JSON.stringify(data));
-
     router.push("/test");
   };
 
@@ -75,7 +82,7 @@ const StudentMap = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-wrap">
+    <div className="relative flex h-screen w-screen flex-wrap">
       {/* 1 */}
       <div className="flex h-1/3 w-1/3 border-0">
         <div className="flex w-1/2 items-end justify-start border-0">
@@ -208,8 +215,40 @@ const StudentMap = () => {
             />
           )}
         </div>
+        <div className="fixed bottom-4 right-4 z-50">
+          <Inventory 
+            onClick={() => setIsInventoryOpen(true)} 
+            className="w-16 h-16 hover:scale-110 transition-transform cursor-pointer" 
+          />
+        </div>
       </div>
+
+      {/* Inventory Popup */}
+      <InventoryPopup 
+        isOpen={isInventoryOpen} 
+        onClose={() => setIsInventoryOpen(false)}
+      >
+        <div className="space-y-4 p-4">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Your Inventory</h2>
+          {inventoryItems.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              {inventoryItems.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-semibold text-gray-800">{item.name}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">Your inventory is empty.</p>
+          )}
+        </div>
+      </InventoryPopup>
     </div>
   );
 };
+
 export default StudentMap;

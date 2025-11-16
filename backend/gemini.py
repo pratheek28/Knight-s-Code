@@ -21,6 +21,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+stories = {
+    "chapter1": "You, Arden Wick, wanderer and reluctant problem-solver, are invited to Duke Malveren's grand tournament feast. Mid-toast, torches dim… and the Duke slumps dead in his high-backed chair. Guards seal the keep, and everyone looks at you — the outsider.",
+    "chapter2": "You inspect the Duke’s tonic vial with the castle alchemist. It’s labeled “Night’s Breath,” a deadly poison — but the contents are only water. Someone swapped ingredients and labels to stage the cause of death.",
+    "chapter3": "Queen Regent Lysandra claims she was praying in her chambers. But servants whisper that she argued with the Duke earlier about altering his will. Lies branch from truth; emotion twists around motive.",
+    "chapter4": "Prince Alistair says he was practicing sword drills alone. Yet pieces of his story repeat with small differences, as if he’s improvising. His movements during the night form a pattern — but not a convincing one.",
+    "chapter5": "Commander Garran gives you a perfect, too-polished testimony, like a speech practiced in front of a mirror. His sentences feel stiff, his words overly formal — like a memorized string.",
+    "chapter6": "You investigate the Treasury Vault. Only four people can access it — the Duke, the Prince, the Queen Regent, and Commander Garran. A chest the Duke withdrew earlier that night is missing. The lock shows no tampering.",
+    "chapter7": "You search the royal archives. A scribe reveals the Duke recently rewrote his will — and the updated testament was removed from the official records. Only someone with high clearance could have pulled the scroll.",
+    "chapter8": "Whispers swirl as nobles accuse each other. Each accusation raises suspicion — and every time one noble speaks against another, they worsen their own credibility. Suspicion spreads like fire because everyone touches it.",
+    "chapter9": "You gather your clues into categories — forgery tools, wax seals, missing files, treasury access, coded notes. All vectors converge on one pattern: the Prince is connected to every category.",
+    "chapter10": "At sunrise, you assemble the suspects. You have motive, access, forged documents, the fake vial, the treasury theft, and the coded guard rotation — every attribute points to the same noble.",
+}
+
+
+
 @app.post("/merlin")
 async def ask_merlin(payload: dict = Body(...)):
     code = payload.get("code", "")
