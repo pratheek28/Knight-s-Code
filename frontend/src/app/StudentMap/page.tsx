@@ -24,9 +24,21 @@ const StudentMap = () => {
 
   // Sample inventory items - replace with your actual inventory data
   const inventoryItems = [
-    { id: 1, name: "Scroll of Knowledge", description: "Reveals hidden clues" },
-    { id: 2, name: "Healing Potion", description: "Restores health" },
+    { id: 1, name: "Scroll of Wisdom" }
   ];
+
+  const clues = [
+    { id: 1, description: "A broken golden arrowhead beneath the Duke’s throne." },
+    { id: 2, description: "The real vial of Night’s Breath is missing entirely." },
+    { id: 3, description: "A will fragment: “…my heir shall receive nothing…” " },
+    { id: 4, description: "His practice log skips the exact window when the Duke died." },
+    { id: 5, description: "A coded note tucked in his gauntlet:“Change the guard at midnight. No witnesses.”" },
+    { id: 6, description: "Wax seal fragment of House Blackthorne stuck to the vault hinge." },
+    { id: 7, description: "Archive ledger entry:“Updated Will — Removed by signet bearer.”" },
+    { id: 8, description: "The same blue wax from the vault also stains the Prince’s writing desk." },
+    { id: 9, description: "A single sheet of accounting: a massive payment to Commander Garran one week before the murder." },
+    { id: 10, description: "One noble had every attribute of guilt. Declare your suspect." },
+  ]
 
   const fetchData = async () => {
     const studentEmail = sessionStorage.getItem("studentEmail");
@@ -229,16 +241,22 @@ const StudentMap = () => {
         onClose={() => setIsInventoryOpen(false)}
       >
         <div className="space-y-4 p-4">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Your Inventory</h2>
+          <p className="text-6xl text-center font-bold mb-4 text-gray-800">Your Inventory</p>
           {inventoryItems.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {inventoryItems.map((item) => (
                 <div 
                   key={item.id} 
                   className="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                  <p className="text-4xl text-center font-semibold mb-8 text-gray-800">{item.name}</p>
+                    <ol 
+                      className="list-decimal"
+                    >
+                      {clues.slice(0, chapter - 1).map((clue) => (
+                        <li key={clue.id} className="ml-4 font-normal text-md text-gray-600 mt-4">{clue.description}</li>
+                      ))}
+                    </ol>
                 </div>
               ))}
             </div>
