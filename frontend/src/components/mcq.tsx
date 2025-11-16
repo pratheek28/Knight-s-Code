@@ -6,6 +6,8 @@ interface MCQProps {
   q1: { q: string; c1: string; c2: string; c3: string; a: string };
   q2: { q: string; c1: string; c2: string; c3: string; a: string };
   q3: { q: string; c1: string; c2: string; c3: string; a: string };
+  count: number;
+    setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const MCQ = (props: MCQProps) => {
@@ -15,18 +17,61 @@ const MCQ = (props: MCQProps) => {
   const handleSelect = (question: "q1" | "q2" | "q3", choice: string) => {
     setAnswers({ ...answers, [question]: choice });
   };
+  const [correct, setcorrect] = useState("");
 
-  const handleSubmit = () => {
-    const correct =
-      (answers.q1 === props.q1.a ? 1 : 0) +
-      (answers.q2 === props.q2.a ? 1 : 0) +
-      (answers.q3 === props.q3.a ? 1 : 0);
+const handleSubmit = () => {
+  const correct =
+    (answers.q1 === props.q1[props.q1.a as keyof typeof props.q1] ? 1 : 0) +
+    (answers.q2 === props.q2[props.q2.a as keyof typeof props.q2] ? 1 : 0) +
+    (answers.q3 === props.q3[props.q3.a as keyof typeof props.q3] ? 1 : 0);
 
-    setResult(`You scored ${correct}/3`);
-  };
+  setResult(`You scored ${correct}/3`);
+  if (correct === 3) {
+    setcorrect("true");
+    props.setCount(props.count + 1);
+  }
+  else{
+    setcorrect("false");
+  }
+  setTimeout(() => setcorrect(""), 1500);
+};
+
 
   return (
     <div className="flex h-screen items-center justify-start">
+              {correct && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span
+            className={`text-[6rem] font-extrabold ${
+              correct === "true"
+                ? "animate-checkmark text-green-500"
+                : "animate-checkmark text-red-500"
+            }`}
+          >
+            {correct === "true" ? "✔" : "✖"}
+          </span>
+
+          <style jsx>{`
+            @keyframes checkmark {
+              0% {
+                transform: scale(0.3);
+                opacity: 0;
+              }
+              50% {
+                transform: scale(1.2);
+                opacity: 1;
+              }
+              100% {
+                transform: scale(1);
+                opacity: 0;
+              }
+            }
+            .animate-checkmark {
+              animation: checkmark 1.2s ease forwards;
+            }
+          `}</style>
+        </div>
+      )}
       <div className="mx-auto w-full max-w-md">
         <div className="h-96 h-[90vh] w-[50vw] overflow-y-auto rounded-lg border-2 border-yellow-700 bg-yellow-100 p-4 shadow">
           {/* Passage */}

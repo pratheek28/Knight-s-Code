@@ -9,12 +9,14 @@ interface IDEProps {
     content: string;
   };
   correctOutput: string;
+    count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const IDE = (props: IDEProps) => {
   const options = {
     params: {
-      languages: "cpp",
+      languages: "cpp-wasm",
       console: "full",
       autorun: "false",
     },
@@ -31,7 +33,7 @@ const IDE = (props: IDEProps) => {
         status: "open",
       },
       script: {
-        language: "cpp",
+        language: "cpp-wasm",
         content: props.script.content,
       },
     },
@@ -53,6 +55,7 @@ const IDE = (props: IDEProps) => {
       if (args[0] == props.correctOutput) {
         console.log("✅ Correct!");
         setcorrect("true");
+        props.setCount(props.count + 1);
       } else {
         console.log("❌ Try again!: ", args[0]);
         setErrors(args[0]);

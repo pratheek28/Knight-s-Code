@@ -15,17 +15,72 @@ const StudyZone = (props: StudyZoneProps) => {
   const [loading, setLoading] = useState(true);
 
   const [showWarning, setShowWarning] = useState("");
+const [mcqData, setMcqData] = useState<any>(null);
+const [ideData, setIdeData] = useState<any>(null);
+
+  const [check, setcheck] = useState(0);
+
+
+  const [qno, setQno] = useState(props.qno);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000); // Simulate loading time
+    setLoading(true);
+    const fetchData = async () => {
+      const response = await fetch("http://127.0.0.1:8000/question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chapter: props.chapno, question: props.qno }),
+      });
 
-    return () => clearTimeout(timer);
-  }, []);
+      const data = await response.json();
+      console.log("DATA:", data);
+if (props.qno === 1) {
+  // MCQ type
+  setMcqData({
+    passage: data.passage,
+    q1: {
+      q: data.q1.q,
+      c1: data.q1.c1,
+      c2: data.q1.c2,
+      c3: data.q1.c3,
+      a: data.q1.a,
+    },
+    q2: {
+      q: data.q2.q,
+      c1: data.q2.c1,
+      c2: data.q2.c2,
+      c3: data.q2.c3,
+      a: data.q2.a,
+    },
+    q3: {
+      q: data.q3.q,
+      c1: data.q3.c1,
+      c2: data.q3.c2,
+      c3: data.q3.c3,
+      a: data.q3.a,
+    },
+  });
+} else {
+  // IDE / Coding type
+  setIdeData({
+    script: {
+      content: data.code, // your generated code
+    },
+    correctOutput: data.expect, // expected console output
+  });
+}
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [qno]);
 
   const handlePrev = () => {
-    if (props.qno > 1) {
+    //setQno(check);
+    console.log("QNO:",qno);
+    if (qno > 1) {
       // Logic to go to previous question FIXXMEEE
     } else {
       setShowWarning(
@@ -36,7 +91,12 @@ const StudyZone = (props: StudyZoneProps) => {
   };
 
   const handleNext = () => {
-    if (props.qno === 3) {
+    console.log("QNO:",qno);
+    if(qno !=props.qno){
+    setQno(check);
+    }
+
+    if (qno === 3) {
       setShowWarning(
         "⚔ Thou hast reached the end of thy chapter's quest. Proceed to the next chapter, mighty one! ⚔",
       );
@@ -89,52 +149,11 @@ const StudyZone = (props: StudyZoneProps) => {
           </div>
 
           <div className="flex h-screen w-screen items-center justify-start px-10">
-            {props.qno !== 1 && (
-              <IDE
-                script={{
-                  content: `
-#include <iostream>
-using namespace std;
-
-int add(int a, int b) {
-    // TODO: fix this function
-    return a - b; // wrong on purpose
-}
-
-int main() {
-    cout << add(2, 3) << endl;
-    return 0;
-}
-`,
-                }}
-                correctOutput={"5"}
-              />
+            {qno !== 1 && (
+              <IDE {...ideData} setCount={setcheck} count={props.qno}/>
             )}
-            {props.qno == 1 && (
-              <MCQ
-                passage="Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions.Read the passage below and answer the questions."
-                q1={{
-                  q: "What is the main idea?",
-                  c1: "Cats are amazing",
-                  c2: "Dogs are fast",
-                  c3: "Birds fly",
-                  a: "Cats are amazing",
-                }}
-                q2={{
-                  q: "Why is the author surprised?",
-                  c1: "The cat can jump high",
-                  c2: "The cat can code",
-                  c3: "The cat can talk",
-                  a: "The cat can code",
-                }}
-                q3={{
-                  q: "What does the cat represent?",
-                  c1: "Curiosity",
-                  c2: "Happiness",
-                  c3: "Fear",
-                  a: "Curiosity",
-                }}
-              />
+            {qno == 1 && (
+<MCQ {...mcqData} setCount={setcheck} count={props.qno}/>
             )}
           </div>
         </>
