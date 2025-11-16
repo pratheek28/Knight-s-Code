@@ -14,8 +14,10 @@ import Inventory from "@/components/inventory";
 import InventoryPopup from "@/components/InventoryPopup";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image"; 
 
 const StudentMap = () => {
+  // --- EXISTING LOGIC (UNCHANGED) ---
   const [email, setEmail] = useState("");
   const [chapter, setChapter] = useState(-1);
   const [questionNum, setQuestion] = useState(-1);
@@ -45,29 +47,29 @@ const StudentMap = () => {
     setEmail(studentEmail ?? "");
     if (!studentEmail) return;
 
-      try {
-        console.log("Fetching student info for email:", studentEmail);
-        const response = await fetch("http://127.0.0.1:8000/getStudentInfo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: studentEmail }),
-        });
+    try {
+      console.log("Fetching student info for email:", studentEmail);
+      const response = await fetch("http://127.0.0.1:8000/getStudentInfo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: studentEmail }),
+      });
 
-        if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log(result);
-
-        setChapter(result.chapter);
-        setQuestion(result.question);
-      } catch (err) {
-        console.log(err);
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
       }
-    };
+
+      const result = await response.json();
+      console.log(result);
+
+      setChapter(result.chapter);
+      setQuestion(result.question);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -92,155 +94,195 @@ const StudentMap = () => {
   const handleFakeClick = () => {
     return;
   };
+  // --- END OF EXISTING LOGIC ---
 
   return (
-    <div className="relative flex h-screen w-screen flex-wrap">
-      {/* 1 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-1/2 items-end justify-start border-0">
-          {chapter >= 1 ? (
-            <ChapterNode src={Chapter1} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-end justify-start rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
+    // 1. Root Container
+    <div className="min-h-screen w-screen flex items-center justify-center relative bg-gray-900">
+      
+      {/* 2. BACKGROUND IMAGE (z-0) */}
+      <Image
+        src="/background/map_screen_BG.png" 
+        alt="Mystical Map Background"
+        fill
+        className="absolute top-0 left-0 z-0 object-cover" 
+        priority
+      />
 
-      {/* 2 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-1/2 items-start justify-center border-0">
-          {chapter >= 3 ? (
-            <ChapterNode src={Chapter3} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-start justify-center rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-        <div className="flex w-1/2 items-end justify-center border-0">
-          {chapter >= 4 ? (
-            <ChapterNode src={Chapter4} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-end justify-center rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* 3 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-1/2 items-end justify-start border-0">
-          {chapter >= 9 ? (
-            <ChapterNode src={Chapter9} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-end justify-start rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-        <div className="flex w-1/2 items-start justify-end border-0">
-          {chapter >= 10 ? (
-            <ChapterNode src={Chapter10} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-start justify-end rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* 4 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-full items-start justify-end border-0">
-          {chapter >= 2 ? (
-            <ChapterNode src={Chapter2} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-start justify-end rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* 5 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-full items-end justify-center border-0">
-          {chapter >= 5 ? (
-            <ChapterNode src={Chapter5} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-end justify-center rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* 6 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-full items-center justify-end border-0">
-          {chapter >= 8 ? (
-            <ChapterNode src={Chapter8} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-center justify-end rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      <div className="h-1/3 w-1/3 border-0"></div>
-
-      {/* 8 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-full items-end justify-end border-0">
-          {chapter >= 6 ? (
-            <ChapterNode src={Chapter6} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-end justify-end rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* 9 */}
-      <div className="flex h-1/3 w-1/3 border-0">
-        <div className="flex w-full items-start justify-start border-0">
-          {chapter >= 7 ? (
-            <ChapterNode src={Chapter7} onClick={handleClick} />
-          ) : (
-            <div
-              className="flex h-30 w-30 cursor-not-allowed items-start justify-start rounded-full bg-black"
-              onClick={handleFakeClick}
-            />
-          )}
-        </div>
-        <div className="fixed bottom-4 right-4 z-50">
-          <Inventory 
-            onClick={() => setIsInventoryOpen(true)} 
-            className="w-16 h-16 hover:scale-110 transition-transform cursor-pointer" 
-          />
-        </div>
-      </div>
-
-      {/* Inventory Popup */}
-      <InventoryPopup 
-        isOpen={isInventoryOpen} 
-        onClose={() => setIsInventoryOpen(false)}
+      {/* 3. Antique Frame Wrapper (16:9 Aspect Ratio Look) */}
+      <div 
+        className="relative w-full aspect-video max-h-[90vh] max-w-[90vw] 
+                   overflow-hidden shadow-2xl shadow-black/80 
+                   border-4 border-[#4b350f] lg:border-8 
+                   drop-shadow-[0_0_15px_rgba(200,150,50,0.5)] 
+                   bg-gray-900/50 backdrop-blur-sm z-10"
       >
-        <div className="space-y-4 p-4">
+        
+        {/* Title Header (z-20: Sits above frame/background) */}
+        <header className="absolute top-4 left-0 right-0 p-4 text-center z-20 bg-gray-900/40 backdrop-blur-sm shadow-xl mx-auto w-[calc(100%-2rem)] max-w-lg rounded-lg">
+            {/* ADDED TEXT BACK TO THE HEADER */}
+            <h1 className="text-4xl font-extrabold text-yellow-300 drop-shadow-[0_0_5px_rgba(255,200,0,0.8)] font-['Pirata_One'] uppercase tracking-widest">
+                The Scholar's Journey 🗺️
+
+            </h1>
+            {/* Added current chapter progress info back as well */}
+            <h2 className="mt-0 text-base text-white/160 font-large">
+                Who hath slain the king?
+            </h2>
+        </header>
+
+        {/* 4. Main Grid Container for Chapter Nodes (Inner Content, z-20) */}
+        <div className="absolute inset-0 flex h-full w-full flex-wrap pt-32 pb-4 z-20"> 
+          
+          {/* 1 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-1/2 items-end justify-start border-0 p-4">
+              {chapter >= 1 ? (
+                <ChapterNode src={Chapter1} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-end justify-start rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 2 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-1/2 items-start justify-center border-0 p-4">
+              {chapter >= 3 ? (
+                <ChapterNode src={Chapter3} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-start justify-center rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+            <div className="flex w-1/2 items-end justify-center border-0 p-4">
+              {chapter >= 4 ? (
+                <ChapterNode src={Chapter4} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-end justify-center rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 3 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-1/2 items-end justify-start border-0 p-4">
+              {chapter >= 9 ? (
+                <ChapterNode src={Chapter9} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-end justify-start rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+            <div className="flex w-1/2 items-start justify-end border-0 p-4">
+              {chapter >= 10 ? (
+                <ChapterNode src={Chapter10} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-start justify-end rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 4 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-full items-start justify-end border-0 p-4">
+              {chapter >= 2 ? (
+                <ChapterNode src={Chapter2} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-start justify-end rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 5 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-full items-end justify-center border-0 p-4">
+              {chapter >= 5 ? (
+                <ChapterNode src={Chapter5} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-end justify-center rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 6 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-full items-center justify-end border-0 p-4">
+              {chapter >= 8 ? (
+                <ChapterNode src={Chapter8} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-center justify-end rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          <div className="h-1/3 w-1/3 border-0"></div>
+
+          {/* 8 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-full items-end justify-end border-0 p-4">
+              {chapter >= 6 ? (
+                <ChapterNode src={Chapter6} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-end justify-end rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* 9 */}
+          <div className="flex h-1/3 w-1/3 border-0">
+            <div className="flex w-full items-start justify-start border-0 p-4">
+              {chapter >= 7 ? (
+                <ChapterNode src={Chapter7} onClick={handleClick} />
+              ) : (
+                <div
+                  className="flex h-30 w-30 cursor-not-allowed items-start justify-start rounded-full bg-black/50"
+                  onClick={handleFakeClick}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Inventory Button (fixed position relative to the 16:9 frame) */}
+          <div className="absolute bottom-4 right-4 z-50">
+            <Inventory 
+              onClick={() => setIsInventoryOpen(true)} 
+              className="w-16 h-16 hover:scale-110 transition-transform cursor-pointer" 
+            />
+          </div>
+        </div>
+
+        {/* Inventory Popup */}
+        <InventoryPopup 
+          isOpen={isInventoryOpen} 
+          onClose={() => setIsInventoryOpen(false)}
+        >
+          <div className="space-y-4 p-4">
           <p className="text-6xl text-center font-bold mb-4 text-gray-800">Your Inventory</p>
           {inventoryItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
@@ -261,10 +303,11 @@ const StudentMap = () => {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">Your inventory is empty.</p>
+            <p className="text-2xl text-center text-gray-600">Your inventory is empty.</p>
           )}
-        </div>
-      </InventoryPopup>
+          </div>
+        </InventoryPopup>
+      </div>
     </div>
   );
 };
