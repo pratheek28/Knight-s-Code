@@ -9,6 +9,7 @@ interface StudyZoneProps {
   chapno: int;
   qno: int;
   background: string;
+  email?: string;
 }
 
 const StudyZone = (props: StudyZoneProps) => {
@@ -19,12 +20,17 @@ const [mcqData, setMcqData] = useState<any>(null);
 const [ideData, setIdeData] = useState<any>(null);
 
   const [check, setcheck] = useState(0);
+  const didFetch = useRef(false);
 
 
-  const [qno, setQno] = useState(props.qno);
+  console.log("StudyZone Props:", props);
+
 
   useEffect(() => {
+      if (didFetch.current) return;
+  didFetch.current = true;
     setLoading(true);
+    console.log("Fetching question data for chapter:", props.chapno, "question:", props.qno);
     const fetchData = async () => {
       const response = await fetch("http://127.0.0.1:8000/question", {
         method: "POST",
@@ -75,12 +81,11 @@ if (props.qno === 1) {
     };
 
     fetchData();
-  }, [qno]);
+  }, []);
 
   const handlePrev = () => {
     //setQno(check);
-    console.log("QNO:",qno);
-    if (qno > 1) {
+    if (props.qno > 1) {
       // Logic to go to previous question FIXXMEEE
     } else {
       setShowWarning(
@@ -91,12 +96,10 @@ if (props.qno === 1) {
   };
 
   const handleNext = () => {
-    console.log("QNO:",qno);
-    if(qno !=props.qno){
-    setQno(check);
+    if(props.qno !=props.qno){
     }
 
-    if (qno === 3) {
+    if (props.qno === 3) {
       setShowWarning(
         "⚔ Thou hast reached the end of thy chapter's quest. Proceed to the next chapter, mighty one! ⚔",
       );
@@ -149,11 +152,11 @@ if (props.qno === 1) {
           </div>
 
           <div className="flex h-screen w-screen items-center justify-start px-10">
-            {qno !== 1 && (
-              <IDE {...ideData} setCount={setcheck} count={props.qno}/>
+            {props.qno !== 1 && (
+              <IDE {...ideData} setCount={setcheck} count={props.qno} email={props.email} chapter={props.chapno} question={props.qno}/>
             )}
-            {qno == 1 && (
-<MCQ {...mcqData} setCount={setcheck} count={props.qno}/>
+            {props.qno == 1 && (
+<MCQ {...mcqData} setCount={setcheck} count={props.qno} email={props.email} chapter={props.chapno} question={props.qno}/>
             )}
           </div>
         </>

@@ -74,7 +74,7 @@ const StudentMap = () => {
 
     console.log("The Data that will be sent: " + JSON.stringify(data));
     sessionStorage.setItem("studentData", JSON.stringify(data));
-    router.push("/test");
+    router.push("/scriptsanctum");
   };
 
   const handleFakeClick = () => {

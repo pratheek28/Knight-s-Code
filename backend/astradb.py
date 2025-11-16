@@ -6,7 +6,7 @@ from astrapy import DataAPIClient, Database
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import File, UploadFile
+from fastapi import File, UploadFile, Body
 
 endpoint = os.environ.get("API_ENDPOINT")
 token = os.environ.get("APPLICATION_TOKEN")
@@ -90,6 +90,14 @@ async def users(request: Request):
         return JSONResponse(content=message, status_code=422)
     
     users = db.get_table("users")
+
+    existingUser = users.find_one({"email": email})
+    if existingUser:
+        message = {
+            "message": "Success"
+        }
+    
+        return JSONResponse(content=message)
     
     userData = {
         "email": email,
@@ -126,13 +134,50 @@ async def getStudentInfo(request: Request):
     
     print(userData)
     return JSONResponse(content=dict(userData))
+
+
+
+@app.post("/updateChapDone")
+async def update_chapter(request: Request):
+    data = await request.json()
+    email = data.get("email")
+    new_chap = data.get("chapter")
+    new_qno = data.get("question")
+
+    if not email or new_chap is None or new_qno is None:
+        return JSONResponse(
+            content={"message": "Error: Missing fields"},
+            status_code=422
+        )
+
+    users = db.get_table("users")
+    userData = users.find_one({"email": email})
+
+    if not userData:
+        return JSONResponse(
+            content={"message": "Error: User not found"},
+            status_code=404
+        )
+
+    # Update chapter and question values
+    users.update_one(
+        {"email": email},
+        {"$set": {"chapter": int(new_chap), "question": int(new_qno)}}
+    )
+
+    # Fetch updated user data
+    updatedUser = users.find_one({"email": email})
+
+    return JSONResponse(content=dict(updatedUser))
     
+
 @app.post("/question")
 async def question(request: Request):
     body = await request.json()  # <-- parse JSON body
 
     chapter = body.get("chapter")
     question = body.get("question") 
+    print("Received chapter:", chapter, "question:", question)
 
     
     if (not question) or (not chapter):
@@ -195,6 +240,14 @@ async def question(request: Request):
 #         chapters.insert_one(chapterData)
 
 # pdfTest("CS10A_Topics.pdf")
+
+@app.post("/merlin")
+async def ask_merlin_endpoint(payload: dict = Body(...)):
+    """
+    Endpoint to provide hints for student C++ code errors.
+    """
+    # Call your existing function
+    return await gemini.ask_merlin(payload)
 
 
 def getQuestion(chapter, question):

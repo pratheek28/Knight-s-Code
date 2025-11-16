@@ -1,4 +1,5 @@
 "use client";
+import { constants } from "node:fs/promises";
 import React, { useState } from "react";
 
 interface MCQProps {
@@ -8,6 +9,9 @@ interface MCQProps {
   q3: { q: string; c1: string; c2: string; c3: string; a: string };
   count: number;
     setCount: React.Dispatch<React.SetStateAction<number>>;
+    email: string;
+    chapter: number;
+    question: number;   
 }
 
 const MCQ = (props: MCQProps) => {
@@ -19,7 +23,7 @@ const MCQ = (props: MCQProps) => {
   };
   const [correct, setcorrect] = useState("");
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const correct =
     (answers.q1 === props.q1[props.q1.a as keyof typeof props.q1] ? 1 : 0) +
     (answers.q2 === props.q2[props.q2.a as keyof typeof props.q2] ? 1 : 0) +
@@ -29,6 +33,34 @@ const handleSubmit = () => {
   if (correct === 3) {
     setcorrect("true");
     props.setCount(props.count + 1);
+    
+    const question=props.question+1;
+    try {
+      const response = await fetch("http://127.0.0.1:8000/updateChapDone", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email:props.email,
+          chapter:props.chapter,
+          question:question,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(`Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`);
+      } else {
+       console.log(`Error: ${data.message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      console.log("Network or server error");
+    } finally {
+    }
+  
   }
   else{
     setcorrect("false");
@@ -75,9 +107,6 @@ const handleSubmit = () => {
       <div className="mx-auto w-full max-w-md">
         <div className="h-96 h-[90vh] w-[50vw] overflow-y-auto rounded-lg border-2 border-yellow-700 bg-yellow-100 p-4 shadow">
           {/* Passage */}
-          <h2 className="mb-2 text-center text-lg font-bold text-yellow-900">
-            📜 Passage
-          </h2>
           <p className="mb-4 text-sm text-yellow-900">{props.passage}</p>
 
           {/* Questions */}

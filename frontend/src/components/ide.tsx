@@ -11,6 +11,10 @@ interface IDEProps {
   correctOutput: string;
     count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
+    email: string;
+    chapter: number;
+    question: number;
+  
 }
 
 const IDE = (props: IDEProps) => {
@@ -46,17 +50,77 @@ const IDE = (props: IDEProps) => {
   const [hint, sethint] = useState("Consulting the Oracle...");
 
   const [correct, setcorrect] = useState("");
+function diffStrings(a: string, b: string) {
+  const len = Math.max(a.length, b.length);
+  let diffs = [];
 
+  for (let i = 0; i < len; i++) {
+    if (a[i] !== b[i]) {
+      diffs.push({
+        index: i,
+        given: a[i] ?? "(none)",
+        expected: b[i] ?? "(none)",
+      });
+    }
+  }
+
+  return diffs;
+
+}
+  const [diff,setDiff] = useState<{ index: number; given: string; expected: string }[]>([]);
   const onReady = (sdk: Playground) => {
     setPlayground(sdk);
+    
 
-    const consoleWatcher = sdk.watch("console", ({ method, args }) => {
+    const consoleWatcher = sdk.watch("console", async ({ method, args }) => {
       console.log(`Console ${method}:`, ...args);
-      if (args[0] == props.correctOutput) {
+if (args[0].trim() === props.correctOutput.trim()) {
         console.log("✅ Correct!");
         setcorrect("true");
-        props.setCount(props.count + 1);
+            props.setCount(props.count + 1);
+            
+    
+    let question=props.question+1;
+    let chapter=props.chapter;
+    if (question>3){
+      // all questions in chapter done
+      question=1;
+      chapter=chapter+1;
+    }
+    try {
+      const response = await fetch("http://127.0.0.1:8000/updateChapDone", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email:props.email,
+          chapter:chapter,
+          question:question,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(`Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`);
       } else {
+       console.log(`Error: ${data.message}`);
+      }
+    } catch (err) {
+      console.error(err);
+      console.log("Network or server error");
+    } finally {
+    }
+      } else {
+const diffs = diffStrings(args[0], props.correctOutput);
+
+console.log("Total differences:", diffs.length);
+
+if (diffs.length > 0) {
+  console.log("First difference:", diffs[0]);
+  setDiff(diffs);
+}
         console.log("❌ Try again!: ", args[0]);
         setErrors(args[0]);
         setcorrect("false");
@@ -102,7 +166,9 @@ const IDE = (props: IDEProps) => {
 
   return (
     <div>
+      
       <div className="relative flex items-center justify-center">
+        
         <LiveCodes
           {...options}
           sdkReady={onReady}
@@ -110,6 +176,33 @@ const IDE = (props: IDEProps) => {
           correctOutput={props.correctOutput}
           style={{ width: "50vw", height: "95vh" }}
         />
+          {/* {diff.length > 0 && (
+    <div className="w-80 ml-6 p-4 bg-red-50 border border-red-200 rounded-xl h-fit sticky top-4">
+      <h3 className="font-bold text-red-700 mb-3">Output Differences</h3>
+
+      <div className="space-y-2">
+        {diff.slice(0, 10).map((d, i) => (
+          <div key={i} className="text-sm flex flex-col">
+            <span className="font-semibold">Index {d.index}</span>
+            <span>
+              <span className="text-gray-600">Given:</span>{" "}
+              <code className="bg-gray-200 px-1 rounded">{d.given}</code>
+            </span>
+            <span>
+              <span className="text-gray-600">Expected:</span>{" "}
+              <code className="bg-gray-200 px-1 rounded">{d.expected}</code>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {diff.length > 4 && (
+        <p className="text-xs text-gray-500 mt-2">
+          Showing first 10 differences…
+        </p>
+      )}
+    </div>
+  )} */}
 
         {/* Buttons */}
         <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 transform space-x-3">
@@ -258,6 +351,7 @@ const IDE = (props: IDEProps) => {
           `}</style>
         </div>
       )}
+      
     </div>
   );
 };

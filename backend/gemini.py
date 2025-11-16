@@ -38,7 +38,6 @@ stories = {
 
 
 
-@app.post("/merlin")
 async def ask_merlin(payload: dict = Body(...)):
     code = payload.get("code", "")
     error = payload.get("error", "")
