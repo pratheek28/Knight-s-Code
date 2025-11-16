@@ -147,11 +147,14 @@ async def question(request: Request):
     intquestion = int(question)
     
     if intquestion == 1:
-        return JSONResponse(content=chapterData["t1", "t2"])
+        # print(chapterData["chapter"], chapterData["t1"], chapterData["t2"], "\n")
+        return JSONResponse(content=gemini.generate_mcq(chapterData["t1"], chapterData["t2"]))
     elif intquestion == 2:
-        return JSONResponse(content=chapterData["t1"])
+        # print(chapterData["chapter"], chapterData["t1"], "\n")
+        return JSONResponse(content=gemini.generate_coding(chapterData["t1"]))
     elif intquestion == 3:
-        return JSONResponse(content=chapterData["t2"])
+        # print(chapterData["chapter"], chapterData["t2"], "\n")
+        return JSONResponse(content=gemini.generate_coding(chapterData["t2"]))
     
     message = {
         "message": "Success"
@@ -213,17 +216,18 @@ def getQuestion(chapter, question):
     
     if intquestion == 1:
         print(chapterData["chapter"], chapterData["t1"], chapterData["t2"], "\n")
-        gemini.generate_mcq(chapterData["t1"], chapterData["t2"])
+        response = gemini.generate_mcq(chapterData["t1"], chapterData["t2"])
     elif intquestion == 2:
         print(chapterData["chapter"], chapterData["t1"], "\n")
-        gemini.generate_coding(chapterData["t1"])
+        response = gemini.generate_coding(chapterData["t1"])
     elif intquestion == 3:
         print(chapterData["chapter"], chapterData["t2"], "\n")
-        gemini.generate_coding(chapterData["t2"])
+        response = gemini.generate_coding(chapterData["t2"])
+        
     # message = {
     #     "message": "Success"
     # }
     
-    # return JSONResponse(content=message)
+    return JSONResponse(content=response)
     
 # getQuestion(2, 1)
