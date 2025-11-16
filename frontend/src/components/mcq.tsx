@@ -3,22 +3,21 @@ import { constants } from "node:fs/promises";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
-
 interface MCQProps {
   passage: string;
   q1: { q: string; c1: string; c2: string; c3: string; a: string };
   q2: { q: string; c1: string; c2: string; c3: string; a: string };
   q3: { q: string; c1: string; c2: string; c3: string; a: string };
   count: number;
-    setCount: React.Dispatch<React.SetStateAction<number>>;
-    email: string;
-    chapter: number;
-    question: number;   
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+  email: string;
+  chapter: number;
+  question: number;
 }
 
 const MCQ = (props: MCQProps) => {
-    const router = useRouter();
-  
+  const router = useRouter();
+
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3: "" });
   const [result, setResult] = useState<null | string>(null);
 
@@ -27,58 +26,57 @@ const MCQ = (props: MCQProps) => {
   };
   const [correct, setcorrect] = useState("");
 
-const handleSubmit = async () => {
-  const correct =
-    (answers.q1 === props.q1[props.q1.a as keyof typeof props.q1] ? 1 : 0) +
-    (answers.q2 === props.q2[props.q2.a as keyof typeof props.q2] ? 1 : 0) +
-    (answers.q3 === props.q3[props.q3.a as keyof typeof props.q3] ? 1 : 0);
+  const handleSubmit = async () => {
+    const correct =
+      (answers.q1 === props.q1[props.q1.a as keyof typeof props.q1] ? 1 : 0) +
+      (answers.q2 === props.q2[props.q2.a as keyof typeof props.q2] ? 1 : 0) +
+      (answers.q3 === props.q3[props.q3.a as keyof typeof props.q3] ? 1 : 0);
 
-  setResult(`You scored ${correct}/3`);
-  if (correct === 3) {
-    setcorrect("true");
-    props.setCount(props.count + 1);
-    
-    const question=props.question+1;
-    try {
-      const response = await fetch("http://127.0.0.1:8000/updateChapDone", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email:props.email,
-          chapter:props.chapter,
-          question:question,
-        }),
-      });
+    setResult(`You scored ${correct}/3`);
+    if (correct === 3) {
+      setcorrect("true");
+      props.setCount(props.count + 1);
 
-      const data = await response.json();
+      const question = props.question + 1;
+      try {
+        const response = await fetch("http://127.0.0.1:8000/updateChapDone", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: props.email,
+            chapter: props.chapter,
+            question: question,
+          }),
+        });
 
-      if (response.ok) {
-        console.log(`Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`);
-        setTimeout(() => {
-      router.push("/StudentMap");
-    }, 3000); // wait 1 second
-      } else {
-       console.log(`Error: ${data.message}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log(
+            `Chapter updated! Current chapter: ${data.chapter}, question: ${data.questionNum}`,
+          );
+          setTimeout(() => {
+            router.push("/StudentMap");
+          }, 3000); // wait 1 second
+        } else {
+          console.log(`Error: ${data.message}`);
+        }
+      } catch (err) {
+        console.error(err);
+        console.log("Network or server error");
+      } finally {
       }
-    } catch (err) {
-      console.error(err);
-      console.log("Network or server error");
-    } finally {
+    } else {
+      setcorrect("false");
     }
-  
-  }
-  else{
-    setcorrect("false");
-  }
-  setTimeout(() => setcorrect(""), 1500);
-};
-
+    setTimeout(() => setcorrect(""), 1500);
+  };
 
   return (
     <div className="flex h-screen items-center justify-start">
-              {correct && (
+      {correct && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span
             className={`text-[6rem] font-extrabold ${

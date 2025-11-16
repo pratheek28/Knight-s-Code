@@ -1,6 +1,6 @@
 import "./globals.css";
 // import { UnifrakturMaguntia } from "next/font/google";
-import { Pirata_One } from 'next/font/google'; // 1. Import Pirata One
+import { Pirata_One } from "next/font/google"; // 1. Import Pirata One
 import { ReactQueryClientProvider } from "@/utils/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -25,7 +25,6 @@ const pirataOne = Pirata_One({
   subsets: ["latin"],
   variable: "--font-pirata-one", // Define the CSS variable
 });
-
 
 export default function RootLayout({ children }: LayoutProps) {
   return (

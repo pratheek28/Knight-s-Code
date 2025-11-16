@@ -16,21 +16,24 @@ const StudyZone = (props: StudyZoneProps) => {
   const [loading, setLoading] = useState(true);
 
   const [showWarning, setShowWarning] = useState("");
-const [mcqData, setMcqData] = useState<any>(null);
-const [ideData, setIdeData] = useState<any>(null);
+  const [mcqData, setMcqData] = useState<any>(null);
+  const [ideData, setIdeData] = useState<any>(null);
 
   const [check, setcheck] = useState(0);
   const didFetch = useRef(false);
 
-
   console.log("StudyZone Props:", props);
 
-
   useEffect(() => {
-      if (didFetch.current) return;
-  didFetch.current = true;
+    if (didFetch.current) return;
+    didFetch.current = true;
     setLoading(true);
-    console.log("Fetching question data for chapter:", props.chapno, "question:", props.qno);
+    console.log(
+      "Fetching question data for chapter:",
+      props.chapno,
+      "question:",
+      props.qno,
+    );
     const fetchData = async () => {
       const response = await fetch("http://127.0.0.1:8000/question", {
         method: "POST",
@@ -42,41 +45,41 @@ const [ideData, setIdeData] = useState<any>(null);
 
       const data = await response.json();
       console.log("DATA:", data);
-if (props.qno === 1) {
-  // MCQ type
-  setMcqData({
-    passage: data.passage,
-    q1: {
-      q: data.q1.q,
-      c1: data.q1.c1,
-      c2: data.q1.c2,
-      c3: data.q1.c3,
-      a: data.q1.a,
-    },
-    q2: {
-      q: data.q2.q,
-      c1: data.q2.c1,
-      c2: data.q2.c2,
-      c3: data.q2.c3,
-      a: data.q2.a,
-    },
-    q3: {
-      q: data.q3.q,
-      c1: data.q3.c1,
-      c2: data.q3.c2,
-      c3: data.q3.c3,
-      a: data.q3.a,
-    },
-  });
-} else {
-  // IDE / Coding type
-  setIdeData({
-    script: {
-      content: data.code, // your generated code
-    },
-    correctOutput: data.expect, // expected console output
-  });
-}
+      if (props.qno === 1) {
+        // MCQ type
+        setMcqData({
+          passage: data.passage,
+          q1: {
+            q: data.q1.q,
+            c1: data.q1.c1,
+            c2: data.q1.c2,
+            c3: data.q1.c3,
+            a: data.q1.a,
+          },
+          q2: {
+            q: data.q2.q,
+            c1: data.q2.c1,
+            c2: data.q2.c2,
+            c3: data.q2.c3,
+            a: data.q2.a,
+          },
+          q3: {
+            q: data.q3.q,
+            c1: data.q3.c1,
+            c2: data.q3.c2,
+            c3: data.q3.c3,
+            a: data.q3.a,
+          },
+        });
+      } else {
+        // IDE / Coding type
+        setIdeData({
+          script: {
+            content: data.code, // your generated code
+          },
+          correctOutput: data.expect, // expected console output
+        });
+      }
       setLoading(false);
     };
 
@@ -96,7 +99,7 @@ if (props.qno === 1) {
   };
 
   const handleNext = () => {
-    if(props.qno !=props.qno){
+    if (props.qno != props.qno) {
     }
 
     if (props.qno === 3) {
@@ -153,10 +156,24 @@ if (props.qno === 1) {
 
           <div className="flex h-screen w-screen items-center justify-start px-10">
             {props.qno !== 1 && (
-              <IDE {...ideData} setCount={setcheck} count={props.qno} email={props.email} chapter={props.chapno} question={props.qno}/>
+              <IDE
+                {...ideData}
+                setCount={setcheck}
+                count={props.qno}
+                email={props.email}
+                chapter={props.chapno}
+                question={props.qno}
+              />
             )}
             {props.qno == 1 && (
-<MCQ {...mcqData} setCount={setcheck} count={props.qno} email={props.email} chapter={props.chapno} question={props.qno}/>
+              <MCQ
+                {...mcqData}
+                setCount={setcheck}
+                count={props.qno}
+                email={props.email}
+                chapter={props.chapno}
+                question={props.qno}
+              />
             )}
           </div>
         </>

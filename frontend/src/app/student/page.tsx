@@ -2,8 +2,8 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import React from 'react';
-import Image from 'next/image'; 
+import React from "react";
+import Image from "next/image";
 
 const Student = () => {
   const router = useRouter();
@@ -46,9 +46,8 @@ const Student = () => {
   return (
     // 1. Root Container: Sets up full screen, relative positioning
     <div
-      className="min-h-screen w-screen flex items-center justify-center relative bg-gray-900" // Added relative and bg-gray-900
+      className="relative flex min-h-screen w-screen items-center justify-center bg-gray-900" // Added relative and bg-gray-900
     >
-      
       {/* 2. BACKGROUND IMAGE using Next.js Image (fills the entire viewport) */}
       <Image
         src="/background/map_screen_BG.png" // Correct source
@@ -61,26 +60,19 @@ const Student = () => {
       {/* 3. Antique Frame Wrapper (16:9 Aspect Ratio Look) 
           This frame now floats above the background image.
       */}
-      <div 
-        className="relative w-full aspect-video max-h-[90vh] max-w-[90vw] 
-                   overflow-hidden shadow-2xl shadow-black/80 
-                   border-[16px] border-[#4b350f] lg:border-[32px] 
-                   drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] 
-                   bg-gray-900/50 backdrop-blur-sm z-10" // Frame styling
+      <div
+        className="relative z-10 aspect-video max-h-[90vh] w-full max-w-[90vw] overflow-hidden border-[16px] border-[#4b350f] bg-gray-900/50 shadow-2xl shadow-black/80 drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] backdrop-blur-sm lg:border-[32px]" // Frame styling
       >
-        
         {/* 4. Login Card Container (Centered within the frame) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-          
-          <div className="bg-white/80 p-10 rounded-2xl shadow-2xl backdrop-blur-md max-w-sm flex flex-col items-center gap-8 border border-gray-300 transform transition duration-300">
-            
+          <div className="flex max-w-sm transform flex-col items-center gap-8 rounded-2xl border border-gray-300 bg-white/80 p-10 shadow-2xl backdrop-blur-md transition duration-300">
             {/* Title (Visual) */}
-            <h1 className="text-4xl text-gray-800 text-center font-['Pirata_One'] drop-shadow-md uppercase">
+            <h1 className="text-center font-['Pirata_One'] text-4xl text-gray-800 uppercase drop-shadow-md">
               Enter the Citadel
             </h1>
 
             {/* Subtitle/Instruction (Visual) */}
-            <p className="text-lg text-gray-600 text-center mb-4">
+            <p className="mb-4 text-center text-lg text-gray-600">
               Login with your Scholar's Account to continue.
             </p>
 
@@ -92,15 +84,14 @@ const Student = () => {
               text="signin_with"
               shape="rectangular"
             />
-            
+
             {/* Footer Note (Visual) */}
-            <div className="text-sm text-gray-500 mt-4">
-                <p>Protected by the Dragon's Seal.</p>
+            <div className="mt-4 text-sm text-gray-500">
+              <p>Protected by the Dragon's Seal.</p>
             </div>
           </div>
         </div>
-
-      </div> 
+      </div>
     </div>
   );
 };

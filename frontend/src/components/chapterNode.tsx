@@ -9,11 +9,7 @@ const ChapterNode = (props: ChapterNodeProps) => {
   return (
     <div>
       <button
-        className="m-2 cursor-pointer rounded-full border-2 group
-                transition-all duration-300
-                hover:drop-shadow-[0_0_15px_rgba(245, 158, 11, 0.7)]
-                hover:brightness-125
-                transform hover:scale-105"
+        className="group hover:drop-shadow-[0_0_15px_rgba(245, 158, 11, 0.7)] m-2 transform cursor-pointer rounded-full border-2 transition-all duration-300 hover:scale-105 hover:brightness-125"
         onClick={props.onClick}
       >
         <Image
