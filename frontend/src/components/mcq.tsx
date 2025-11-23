@@ -38,17 +38,20 @@ const MCQ = (props: MCQProps) => {
 
       const question = props.question + 1;
       try {
-        const response = await fetch("https://knight-s-code.onrender.com/updateChapDone", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "https://knight-s-code.onrender.com/updateChapDone",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: props.email,
+              chapter: props.chapter,
+              question: question,
+            }),
           },
-          body: JSON.stringify({
-            email: props.email,
-            chapter: props.chapter,
-            question: question,
-          }),
-        });
+        );
 
         const data = await response.json();
 
@@ -108,7 +111,7 @@ const MCQ = (props: MCQProps) => {
         </div>
       )}
       <div className="mx-auto w-full max-w-md">
-        <div className="h-96 h-[90vh] w-[50vw] overflow-y-auto rounded-lg border-2 border-yellow-700 bg-yellow-100 p-4 shadow">
+        <div className="h-[90vh] w-[75vw] overflow-y-auto rounded-lg border-2 border-yellow-700 bg-yellow-100 p-4 shadow md:w-[50vw]">
           {/* Passage */}
           <p className="mb-4 text-sm text-yellow-900">{props.passage}</p>
 

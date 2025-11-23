@@ -49,7 +49,7 @@ const Student = () => {
   return (
     // 1. Root Container: Sets up full screen, relative positioning
     <div
-      className="relative flex min-h-screen w-screen items-center justify-center bg-gray-900" // Added relative and bg-gray-900
+      className="relative flex h-screen w-screen items-center justify-center bg-gray-900" // Added relative and bg-gray-900
     >
       {/* 2. BACKGROUND IMAGE using Next.js Image (fills the entire viewport) */}
       <Image
@@ -64,10 +64,10 @@ const Student = () => {
           This frame now floats above the background image.
       */}
       <div
-        className="relative z-10 aspect-video max-h-[90vh] w-full max-w-[90vw] overflow-hidden border-[16px] border-[#4b350f] bg-gray-900/50 shadow-2xl shadow-black/80 drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] backdrop-blur-sm lg:border-[32px]" // Frame styling
+        className="relative z-10 m-4 h-4/5 w-full overflow-hidden border-16 border-[#4b350f] bg-gray-900/50 shadow-2xl shadow-black/80 drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] backdrop-blur-sm md:aspect-video md:max-h-[90vh] md:max-w-[90vw] lg:border-32" // Frame styling
       >
         {/* 4. Login Card Container (Centered within the frame) */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+        <div className="absolute inset-x-0 top-0 flex h-full w-full flex-col items-center justify-center p-4 md:inset-0">
           <div className="flex max-w-sm transform flex-col items-center gap-8 rounded-2xl border border-gray-300 bg-white/80 p-10 shadow-2xl backdrop-blur-md transition duration-300">
             {/* Title (Visual) */}
             <h1 className="text-center font-['Pirata_One'] text-4xl text-gray-800 uppercase drop-shadow-md">

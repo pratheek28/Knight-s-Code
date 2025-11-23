@@ -174,42 +174,18 @@ const IDE = (props: IDEProps) => {
   };
 
   return (
-    <div>
-      <div className="relative flex items-center justify-center">
+    <div className="flex h-full w-full flex-col md:flex-row">
+      <div className="relative mt-8 flex flex-col items-center justify-center md:mt-0 md:flex-row">
         <LiveCodes
           {...options}
           sdkReady={onReady}
           script={props.script}
           correctOutput={props.correctOutput}
-          style={{ width: "50vw", height: "95vh" }}
+          style={{
+            width: window.innerWidth < 640 ? "90vw" : "50vw",
+            height: "95vh",
+          }}
         />
-        {/* {diff.length > 0 && (
-    <div className="w-80 ml-6 p-4 bg-red-50 border border-red-200 rounded-xl h-fit sticky top-4">
-      <h3 className="font-bold text-red-700 mb-3">Output Differences</h3>
-
-      <div className="space-y-2">
-        {diff.slice(0, 10).map((d, i) => (
-          <div key={i} className="text-sm flex flex-col">
-            <span className="font-semibold">Index {d.index}</span>
-            <span>
-              <span className="text-gray-600">Given:</span>{" "}
-              <code className="bg-gray-200 px-1 rounded">{d.given}</code>
-            </span>
-            <span>
-              <span className="text-gray-600">Expected:</span>{" "}
-              <code className="bg-gray-200 px-1 rounded">{d.expected}</code>
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {diff.length > 4 && (
-        <p className="text-xs text-gray-500 mt-2">
-          Showing first 10 differences…
-        </p>
-      )}
-    </div>
-  )} */}
 
         {/* Buttons */}
         <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 transform space-x-3">
@@ -232,7 +208,7 @@ const IDE = (props: IDEProps) => {
       </div>
 
       {showgenie && (
-        <div className="absolute top-1/2 right-30 z-50 w-80 -translate-y-1/2 transform">
+        <div className="static z-50 mt-4 w-full md:absolute md:top-1/2 md:right-30 md:mt-0 md:w-80 md:-translate-y-1/2 md:transform">
           <div
             className={`relative overflow-hidden rounded-xl border-2 border-yellow-400 bg-yellow-100/90 p-4 shadow-xl backdrop-blur-sm ${
               hint === "Consulting the Oracle..." ? "animate-pulse" : ""
