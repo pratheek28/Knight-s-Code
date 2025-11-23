@@ -14,7 +14,7 @@ const Page: React.FC = () => {
 
   const handleStudent = () => {
     router.push("/student");
-  }; 
+  };
 
   const bounceAnimationProps = {
     animate: { y: [0, -8, 0] },
@@ -23,7 +23,7 @@ const Page: React.FC = () => {
       repeat: Infinity,
       ease: "easeInOut",
     },
-  }; 
+  };
 
   const buttonCosmicTheme: string = `
     bg-purple-900 
@@ -61,7 +61,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="relative flex h-screen items-center justify-center bg-gray-900 p-4">
-      <div className="relative w-full h-full overflow-hidden border-4 border-yellow-700/50 shadow-2xl shadow-black/80">
+      <div className="relative h-full w-full overflow-hidden border-4 border-yellow-700/50 shadow-2xl shadow-black/80">
         <Image
           src="/background/splash_screen_BG.png"
           alt="Mystical Cosmic Background"
@@ -70,7 +70,7 @@ const Page: React.FC = () => {
           priority
         />
 
-        <div className="absolute inset-x-0 top-0 md:inset-0 z-10 flex flex-col items-center justify-center gap-10 p-8 text-center md:p-12">
+        <div className="absolute inset-x-0 top-0 z-10 flex flex-col items-center justify-center gap-10 p-8 text-center md:inset-0 md:p-12">
           <div className="mt-2">
             <Image
               src="/icons/KnightsCode_logo.png"
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
 
           <h1 className={titleClasses}>Play Now!</h1>
 
-          <div className="mt-4 flex md:flex-row flex-col w-full max-w-lg items-center justify-center gap-6 md:gap-12">
+          <div className="mt-4 flex w-full max-w-lg flex-col items-center justify-center gap-6 md:flex-row md:gap-12">
             <motion.div
               className="flex items-center justify-center"
               {...bounceAnimationProps}

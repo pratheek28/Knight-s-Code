@@ -64,15 +64,13 @@ const Teacher = () => {
       <Image
         src="/background/map_screen_BG.png"
         alt="Mystical Map Background"
-        fill 
+        fill
         className="absolute top-0 left-0 z-0 object-cover"
         priority
       />
 
-      <div
-        className="flex justify-center items-center relative z-10 h-4/5 w-5/6 p-4 md:aspect-video md:inset-0 overflow-hidden border-16 border-[#4b350f] bg-gray-900/50 shadow-2xl shadow-black/80 drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] backdrop-blur-sm lg:border-32"
-      >
-        <div className="absolute h-3/4 w-11/12 flex flex-col items-center justify-center">
+      <div className="relative z-10 flex h-4/5 w-5/6 items-center justify-center overflow-hidden border-16 border-[#4b350f] bg-gray-900/50 p-4 shadow-2xl shadow-black/80 drop-shadow-[0_0_10px_rgba(200,150,50,0.5)] backdrop-blur-sm md:inset-0 md:aspect-video lg:border-32">
+        <div className="absolute flex h-3/4 w-11/12 flex-col items-center justify-center">
           <div className="flex w-full max-w-sm flex-col items-center gap-8 rounded-2xl border border-gray-300 bg-white/90 p-10 shadow-2xl backdrop-blur-md">
             <h1 className="text-center font-['Pirata_One'] text-4xl text-gray-800 uppercase drop-shadow-md">
               SchoolMaster Portal

@@ -120,7 +120,7 @@ const StudyZone = (props: StudyZoneProps) => {
 
   return (
     <div
-      className="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-cover bg-center"
+      className="relative flex h-screen w-screen justify-center gap-4 overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: `url(${props.background})` }}
     >
       {/* Medieval warning popup at top */}
@@ -134,14 +134,14 @@ const StudyZone = (props: StudyZoneProps) => {
 
       {!loading && (
         <>
-          <div className="absolute top-4 right-4 flex space-x-2">
+          <div className="absolute flex items-start justify-center gap-2 pt-1 md:top-4 md:right-4">
             <button
               onClick={handlePrev}
               className="cursor-pointer rounded-md border-2 border-yellow-500 bg-gradient-to-br from-purple-700 via-indigo-800 to-purple-900 px-3 py-1 text-lg font-bold text-yellow-300 shadow-[0_0_12px_rgba(255,215,0,0.8)] ring-1 ring-yellow-400 transition-all duration-200 hover:scale-110 hover:shadow-[0_0_24px_rgba(255,255,180,0.9)]"
             >
               &lt;
             </button>
-            <div className="flex items-center justify-center space-x-2 text-lg font-bold tracking-wider text-yellow-300">
+            <div className="text-md flex items-center justify-center space-x-2 font-bold tracking-wider text-yellow-300 md:text-lg">
               <span className="rounded border-2 border-yellow-600 bg-yellow-800 px-2 py-1 shadow-md">
                 Chapter {props.chapno}
               </span>
@@ -159,7 +159,7 @@ const StudyZone = (props: StudyZoneProps) => {
             </button>
           </div>
 
-          <div className="flex h-screen w-screen items-center justify-start px-10">
+          <div className="flex h-screen w-screen items-center justify-start overflow-y-scroll px-4 pt-8 md:px-10 md:pt-0">
             {props.qno !== 1 && (
               <IDE
                 {...ideData}
